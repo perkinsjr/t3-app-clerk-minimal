@@ -1,0 +1,26 @@
+.container {
+  min-height: calc(100vh - 64px);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 90vw;
+  margin: auto;
+}
+
+.main {
+  max-width: 540px;
+  padding-top: 2rem;
+  flex: 1;
+}
+
+
+
+@media screen and (min-width: 768px) {
+  .main {
+    padding-top: 4.5rem;
+  }
+
+  
+}
