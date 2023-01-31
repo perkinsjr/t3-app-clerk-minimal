@@ -11,7 +11,7 @@ The following project uses TRPC + Clerk with minimal styling. The project is a g
 ## How to use
 
 1. Create a [Clerk account](https://dashboard.clerk.dev/sign-up)
-2. Copy `.env.local.sample` and rename to `.env` and add your keys found in the dashboard.
+2. Copy `.env.example` and rename to `.env` and add your keys found in the dashboard.
 3. Run `npm install`
 4. Run `npm run dev`
 
