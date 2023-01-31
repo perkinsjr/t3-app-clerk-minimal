@@ -1,19 +1,43 @@
 // @ts-check
-import { z } from 'zod'
-
-export const serverSchema = z.object({
-  NODE_ENV: z.enum(['development', 'test', 'production']),
-  CLERK_JWT_KEY: z.string(),
-  CLERK_API_KEY: z.string()
-})
-
-export const clientSchema = z.object({
-  NEXT_PUBLIC_CLERK_FRONTEND_API: z.string()
-})
+import { z } from "zod";
 
 /**
- * @type {{ [k in keyof z.infer<typeof clientSchema>]: z.infer<typeof clientSchema>[k] | undefined }}
+ * Specify your server-side environment variables schema here.
+ * This way you can ensure the app isn't built with invalid env vars.
+ */
+export const serverSchema = z.object({
+  DATABASE_URL: z.string().url(),
+  CLERK_SECRET_KEY: z.string(),
+  NODE_ENV: z.enum(["development", "test", "production"]),
+});
+
+/**
+ * You can't destruct `process.env` as a regular object in the Next.js
+ * middleware, so you have to do it manually here.
+ * @type {{ [k in keyof z.input<typeof serverSchema>]: string | undefined }}
+ */
+export const serverEnv = {
+  DATABASE_URL: process.env.DATABASE_URL,
+  CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+  NODE_ENV: process.env.NODE_ENV,
+};
+
+/**
+ * Specify your client-side environment variables schema here.
+ * This way you can ensure the app isn't built with invalid env vars.
+ * To expose them to the client, prefix them with `NEXT_PUBLIC_`.
+ */
+export const clientSchema = z.object({
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string(),
+});
+
+/**
+ * You can't destruct `process.env` as a regular object, so you have to do
+ * it manually here. This is because Next.js evaluates this at build time,
+ * and only used environment variables are included in the build.
+ * @type {{ [k in keyof z.input<typeof clientSchema>]: string | undefined }}
  */
 export const clientEnv = {
-  NEXT_PUBLIC_CLERK_FRONTEND_API: process.env.NEXT_PUBLIC_CLERK_FRONTEND_API
-}
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+};
