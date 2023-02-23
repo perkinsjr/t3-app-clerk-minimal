@@ -17,15 +17,14 @@
  *
  */
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import { getAuth, clerkClient } from "@clerk/nextjs/server";
+import { getAuth } from "@clerk/nextjs/server";
+import type { SignedInAuthObject,SignedOutAuthObject } from "@clerk/nextjs/dist/api";
+
 import { prisma } from "../db";
 
-import type { User } from "@clerk/nextjs/dist/api";
-
-interface userData {
-  user: User | null;
+interface AuthContext {
+  auth: SignedInAuthObject | SignedOutAuthObject;
 }
-
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use
  * it, you can export it from here
@@ -35,9 +34,9 @@ interface userData {
  * - trpc's `createSSGHelpers` where we don't have req/res
  * @see https://create.t3.gg/en/usage/trpc#-servertrpccontextts
  */
-const createInnerTRPCContext = ({ user }: userData) => {
+const createInnerTRPCContext = ({ auth }: AuthContext  ) => {
   return {
-    user,
+    auth,
     prisma,
   };
 };
@@ -48,17 +47,9 @@ const createInnerTRPCContext = ({ user }: userData) => {
  * @link https://trpc.io/docs/context
  */
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-  async function getUser() {
-    // get userId from request
-    const { userId } = getAuth(opts.req);
-    // get full user object
-    const user = userId ? await clerkClient.users.getUser(userId) : null;
-    return user;
-  }
+  
 
-  const user = await getUser();
-
-  return createInnerTRPCContext({ user });
+  return createInnerTRPCContext({ auth: getAuth(opts.req) });
 };
 
 /**
@@ -79,12 +70,13 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 
 // check if the user is signed in, otherwise through a UNAUTHORIZED CODE
 const isAuthed = t.middleware(({ next, ctx }) => {
-  if (!ctx.user) {
+  if (!ctx.auth.userId) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
+
   return next({
     ctx: {
-      user: ctx.user,
+      auth: ctx.auth,
     },
   });
 });
