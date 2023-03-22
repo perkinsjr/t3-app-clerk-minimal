@@ -10,7 +10,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@clerk/nextjs": "^4.11.7",
+    "@clerk/nextjs": "^4.11.13",
     "@prisma/client": "^4.9.0",
     "@tanstack/react-query": "^4.20.0",
     "@trpc/client": "^10.16.0",
