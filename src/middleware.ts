@@ -7,11 +7,12 @@ const publicPaths = ["/", "/sign-in*", "/sign-up*", "/api/trpc/example*"];
 
 const isPublic = (path: string) => {
   return publicPaths.find((x) =>
-    path.match(new RegExp(`^${x}$`.replace("*$", "($|/)")))
+    path.match(new RegExp(`^${x}$`.replace("*$", "($|/|\\.)")))
   );
 };
 
 export default withClerkMiddleware((request: NextRequest) => {
+  console.log(request.nextUrl.pathname)
   if (isPublic(request.nextUrl.pathname)) {
     return NextResponse.next();
   }
