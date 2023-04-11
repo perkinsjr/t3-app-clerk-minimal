@@ -18,12 +18,15 @@
  */
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { getAuth } from "@clerk/nextjs/server";
-import type { SignedInAuthObject,SignedOutAuthObject } from "@clerk/nextjs/api";
+import type {
+  SignedInAuthObject,
+  SignedOutAuthObject,
+} from "@clerk/nextjs/api";
 
 import { prisma } from "../db";
 
 interface AuthContext {
-  auth: SignedInAuthObject | SignedOutAuthObject;
+  auth?: SignedInAuthObject | SignedOutAuthObject;
 }
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use
@@ -34,7 +37,7 @@ interface AuthContext {
  * - trpc's `createSSGHelpers` where we don't have req/res
  * @see https://create.t3.gg/en/usage/trpc#-servertrpccontextts
  */
-const createInnerTRPCContext = ({ auth }: AuthContext  ) => {
+export const createInnerTRPCContext = ({ auth }: AuthContext) => {
   return {
     auth,
     prisma,
@@ -47,8 +50,6 @@ const createInnerTRPCContext = ({ auth }: AuthContext  ) => {
  * @link https://trpc.io/docs/context
  */
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-  
-
   return createInnerTRPCContext({ auth: getAuth(opts.req) });
 };
 
@@ -70,7 +71,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 
 // check if the user is signed in, otherwise through a UNAUTHORIZED CODE
 const isAuthed = t.middleware(({ next, ctx }) => {
-  if (!ctx.auth.userId) {
+  if (!ctx.auth?.userId) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 

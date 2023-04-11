@@ -1,11 +1,22 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { serverSideHelper } from "../utils/serverSideHelper";
 
 import { api } from "../utils/api";
 
+export const getStaticProps = async () => {
+  await serverSideHelper.example.getAll.prefetch();
+  return {
+    props: {
+      trpcState: serverSideHelper.dehydrate(),
+    },
+  };
+};
+
 const Home: NextPage = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const { data } = api.example.getAll.useQuery();
 
   return (
     <>
@@ -42,6 +53,12 @@ const Home: NextPage = () => {
                 to deploy it.
               </div>
             </Link>
+            <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
+              <h3 className="text-2xl font-bold">Prefetched data</h3>
+              {data?.prefetchedData.map((i) => (
+                <p key={i.id}>{i.id}</p>
+              ))}
+            </div>
           </div>
           <p className="text-2xl text-white">
             {hello.data ? hello.data.greeting : "Loading tRPC query..."}
