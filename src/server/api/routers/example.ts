@@ -15,4 +15,7 @@ export const exampleRouter = createTRPCRouter({
       prefetchedData: [{ id: "1" }, { id: "2" }, { id: "3" }, { id: "4" }],
     };
   }),
+  getAllExamples: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.example.findMany();
+  }),
 });
