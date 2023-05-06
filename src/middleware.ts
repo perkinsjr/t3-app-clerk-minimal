@@ -3,7 +3,7 @@ import { authMiddleware } from "@clerk/nextjs/server";
 
 export default authMiddleware(
   {
-    ignoredRoutes: ["/api/trpc"],
+    ignoredRoutes: [],
     publicRoutes: ["/", "/api/trpc/example.hello"]
   }
 );
