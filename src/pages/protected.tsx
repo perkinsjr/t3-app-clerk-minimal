@@ -11,7 +11,6 @@ const Protected: NextPage = () => {
         </h1>
         <p className="text-2xl text-white">Click this User Button!</p>
         <UserButton afterSignOutUrl="/" />
-        <button>Click me</button>
       </div>
     </main>
   );
