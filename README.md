@@ -18,6 +18,6 @@ The following project uses TRPC + Clerk with minimal styling. The project is a g
 
 ## Shoutouts
 
-- Huge shoutout to the team at [TRPC](https://trpc.io) for making an awesome project.
+- Huge shoutout to the team at [TRPC](https://trpc.io) for making an awesome project. 
 
-- Shoutout to [t3 stack](https://create.t3.gg/) for introducing a lot of people to the TRPC and influencing structure of this project.
+- Shoutout to [t3 stack](https://create.t3.gg/) for introducing a lot of people to the TRPC and influencing structure of this project. 
